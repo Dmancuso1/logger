@@ -31,24 +31,42 @@ app.get('/', function (req, res) {
   res.send("Welcome to Logger")
 })
 
+// this logs all users. ( TODO: switch to user profile)
+app.get('/userindex', (req, res) => {
+  MongoClient.connect(uri, function (err, db) {
+    if (err) throw err;
+    let dbo = db.db(`${dbName}`);
+    dbo.collection("users").find({}, function (err, result) {
+      if (err) throw err;
+      result.forEach((user) => {
+        console.log(user); // logs current user
+      })
+      db.close();
+    });
 
 
+  });
 
+})
+
+
+// This adds a user
 app.post("/adduser", (req, res) => {
   console.log(req.body)
   const body = {
-    fName: req.body.first,
-    lName: req.body.last,
+    fName: req.body.fName,
+    lName: req.body.lName,
     email: req.body.email,
     password: req.body.password
   };
 
-  MongoClient.connect(uri, function(err, db) {
+  MongoClient.connect(uri, function (err, db) {
     if (err) throw err;
     var dbo = db.db("logger");
-    dbo.collection("users").insertOne(body, function(err, res) {
+    dbo.collection("users").insertOne(body, function (err, res) {
       if (err) throw err;
       console.log("1 document inserted");
+      console.log('RES', res)
       db.close();
     });
   });
