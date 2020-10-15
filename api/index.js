@@ -52,6 +52,8 @@ app.get('/userindex', (req, res) => {
 
 
 // REGISTER - POST to /adduser, inserts one user
+
+
 app.post("/adduser", (req, res, next) => {
   console.log(req.body)
   const body = {
@@ -70,7 +72,7 @@ app.post("/adduser", (req, res, next) => {
       //fail:
       console.log('Email already exists!!!')
       console.log("0 documents inserted");
-      res.end();
+      // res.end();
     } else {
       // success:
       dbo.collection("users").insertOne(body, function (err, result) {
@@ -84,7 +86,7 @@ app.post("/adduser", (req, res, next) => {
         });
         console.log('NEW JWT TOKEN', token)
         // send obj with user and token info 
-        res.status(204).send({
+        res.status(201).send({
           accessToken: token,
           currentUser: newUser
         });

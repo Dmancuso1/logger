@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState, useEffect } from 'react';
 import NavTop from './components/nav-top';
 import Home from './components/home.jsx';
 import LoginPage from './components/login-page';
@@ -10,22 +10,25 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     //can set userId, cookie etc..
-    setCurrentUser("email@email.com")
+    const localToken = localStorage.getItem("token");
+    if (localToken) {
+      setToken(localToken);
+    }
   }, [])
 
   return (
     <>
       <Router>
-        <NavTop user={currentUser} />
+        <NavTop user={token} />
         <Switch>
           {/* Public Routes */}
-          <Route exact path="/login" component={() => (<LoginPage user={currentUser} />)}></Route>
-          <Route exact path="/register" component={() => (<Register user={currentUser} />)}></Route>
-          <Route exact path="/" component={() => (<Home user={currentUser} />)}></Route>
+          <Route exact path="/login" component={() => (<LoginPage setToken={setToken} />)}></Route>
+          <Route exact path="/register" component={() => (<Register setToken={setToken} />)}></Route>
+          <Route exact path="/" component={() => (<Home setToken={setToken} />)}></Route>
           {/* User Routes */}
         </Switch>
       </Router>

@@ -21,8 +21,12 @@ const Register = (props) => {
     console.log("USER OBJ", userObj)
     axios.post('/adduser', userObj)
     .then(function (res) {
+      // pass
       console.log("POST TO SERVER", res)
+      localStorage.setItem("token", res.data.accessToken);
+      props.setToken(res.data.accessToken)
     }).catch(function (err) {
+      // fail
       console.log("ERROR POST TO SERVER", err)
     })
 
