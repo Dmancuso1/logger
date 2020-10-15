@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink } from "react-router-dom";
 
 const NavTop = (props) => {
-  const [firstName, setFirstName] = useState("");
+
 
   console.log("PROPS", props)
 

@@ -30,6 +30,7 @@ const Register = (props) => {
     setLName("");
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
 
   }
 
