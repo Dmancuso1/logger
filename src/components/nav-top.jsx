@@ -1,8 +1,7 @@
 import React from 'react';
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 const NavTop = (props) => {
-
 
   console.log("PROPS", props)
 
@@ -17,7 +16,7 @@ const NavTop = (props) => {
           <NavLink className="" to="/register">Register</NavLink>
         </li>
         <li>
-          {props.isLoggedIn ? <NavLink className="" to="/login">Logout</NavLink> : (<NavLink className="" to="/logout">Login</NavLink>)}
+          {props.user ? (<NavLink className="" to="/">Logout</NavLink>) : (<Link to="/login">Login</Link>)}
         </li>
       </ul>
     </>

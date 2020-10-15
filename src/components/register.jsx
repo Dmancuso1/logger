@@ -40,7 +40,7 @@ const Register = (props) => {
     <h1>Register</h1>
     <form className="" onSubmit={handleSubmit}>
         <label>
-          <p><span>First Name:</span>
+          <p><span>*First Name:</span>
             <input
               type="text"
               value={fName}
@@ -50,7 +50,7 @@ const Register = (props) => {
           </p>
         </label>
         <label>
-          <p><span>Last Name:</span>
+          <p><span>*Last Name:</span>
             <input
               type="text"
               value={lName}
@@ -60,7 +60,7 @@ const Register = (props) => {
           </p>
         </label>
         <label>
-          <p><span>Email:</span>
+          <p><span>*Email:</span>
             <input
               type="text"
               value={email}
@@ -70,7 +70,7 @@ const Register = (props) => {
           </p>
         </label>
         <label>
-          <p><span>Password: </span>
+          <p><span>*Password: </span>
             <input
               type="text"
               value={password}
@@ -80,7 +80,7 @@ const Register = (props) => {
           </p>
         </label>
         <label>
-          <p><span>Confirm Password:</span>
+          <p><span>*Confirm Password:</span>
             <input
               type="text"
               value={confirmPassword}
