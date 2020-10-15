@@ -23,7 +23,7 @@ const Register = (props) => {
     .then(function (res) {
       // pass
       console.log("POST TO SERVER", res)
-      localStorage.setItem("token", res.data.accessToken);
+      localStorage.setItem("accessToken", res.data.accessToken);
       props.setToken(res.data.accessToken)
     }).catch(function (err) {
       // fail
@@ -50,6 +50,7 @@ const Register = (props) => {
               value={fName}
               placeholder="First Name"
               onChange={e => setFName(e.target.value)}
+              required
             />
           </p>
         </label>
@@ -60,6 +61,7 @@ const Register = (props) => {
               value={lName}
               placeholder="Last Name"
               onChange={e => setLName(e.target.value)}
+              required
             />
           </p>
         </label>
@@ -70,6 +72,7 @@ const Register = (props) => {
               value={email}
               placeholder="Email"
               onChange={e => setEmail(e.target.value)}
+              required
             />
           </p>
         </label>
@@ -80,6 +83,7 @@ const Register = (props) => {
               value={password}
               placeholder="Password"
               onChange={e => setPassword(e.target.value)}
+              required
             />
           </p>
         </label>
@@ -90,6 +94,7 @@ const Register = (props) => {
               value={confirmPassword}
               placeholder="Re-type password"
               onChange={e => setConfirmPassword(e.target.value)}
+              required
             />
           </p>
         </label>

@@ -85,7 +85,7 @@ app.post("/adduser", (req, res, next) => {
           expiresIn: 86400 // 24 hours
         });
         console.log('NEW JWT TOKEN', token)
-        // send obj with user and token info 
+        // send response obj with user and token info 
         res.status(201).send({
           accessToken: token,
           currentUser: newUser

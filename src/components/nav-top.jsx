@@ -18,6 +18,7 @@ const NavTop = (props) => {
         <li>
           {props.user ? (<NavLink className="" to="/">Logout</NavLink>) : (<Link to="/login">Login</Link>)}
         </li>
+        {props.user ? <li><NavLink className="" to="/dashboard">My Dashboard</NavLink></li> : null}
       </ul>
     </>
   )
