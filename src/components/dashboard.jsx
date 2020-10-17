@@ -1,9 +1,11 @@
 import React from 'react';
 
 const Dashboard = (props) => {
+  console.log("props from dashboard ", props)
   return (
     <>
-    <h1>My Dashboard</h1>
+    <h1>{props.localUser ? `${props.localUser}'s` : null} Dashboard</h1>
+
     </>
   )
 }

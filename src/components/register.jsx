@@ -24,7 +24,9 @@ const Register = (props) => {
       // pass
       console.log("POST TO SERVER", res)
       localStorage.setItem("accessToken", res.data.accessToken);
-      props.setToken(res.data.accessToken)
+      localStorage.setItem("localUser", res.data.currentUser.email);
+      props.token(res.data.accessToken)
+      props.localUser(res.data.currentUser.email)
     }).catch(function (err) {
       // fail
       console.log("ERROR POST TO SERVER", err)

@@ -16,9 +16,9 @@ const NavTop = (props) => {
           <NavLink className="" to="/register">Register</NavLink>
         </li>
         <li>
-          {props.user ? (<NavLink className="" to="/">Logout</NavLink>) : (<Link to="/login">Login</Link>)}
+          {props.token ? (<NavLink className="" to="/">Logout</NavLink>) : (<Link to="/login">Login</Link>)}
         </li>
-        {props.user ? <li><NavLink className="" to="/dashboard">My Dashboard</NavLink></li> : null}
+        {props.token ? <li><NavLink className="" to="/dashboard">My Dashboard</NavLink></li> : null}
       </ul>
     </>
   )

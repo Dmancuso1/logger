@@ -70,21 +70,21 @@ app.post("/adduser", (req, res, next) => {
     const isDupe = await dbo.collection("users").findOne({ email: `${req.body.email}` });
     if (isDupe) {
       //fail:
-      console.log('Email already exists!!!')
-      console.log("0 documents inserted");
+      // console.log('Email already exists!!!')
+      // console.log("0 documents inserted");
       // res.end();
     } else {
       // success:
       dbo.collection("users").insertOne(body, function (err, result) {
         if (err) throw err;
         const newUser = result.ops[0]
-        console.log("1 document inserted");
-        console.log('returned user', newUser)
+        // console.log("1 document inserted");
+        // console.log('returned user', newUser)
         // create Token
         const token = jwt.sign({ email: newUser.email }, process.env.JWT_SECRET, {
           expiresIn: 86400 // 24 hours
         });
-        console.log('NEW JWT TOKEN', token)
+        // console.log('NEW JWT TOKEN', token)
         // send response obj with user and token info 
         res.status(201).send({
           accessToken: token,
@@ -103,6 +103,49 @@ app.get("/login", (req, res, next) => {
   res.send("Hello From Login")
 });
 
+// LOGIN - POST
+app.post("/login", (req, res, next) => {
+  // TODO: add functionality.
+  // findOne user by req.body.email
+  MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, async function (err, db) {
+    if (err) throw err;
+
+    console.log("this is what's in the req.body: ", req.body.email)
+
+    let dbo = db.db("logger");
+
+    const getUser = await dbo.collection("users").findOne({ email: `${req.body.email}` });
+    console.log("GET USER ", getUser)
+    if (!getUser) {
+      //fail
+      console.log('user not found. Would you like to create an account?')
+      res.status(400).send({
+        error: "User Not Found."
+      })
+    } else {
+      const token = jwt.sign({ email: getUser.email }, process.env.JWT_SECRET, {
+        expiresIn: 86400 // 24 hours
+      });
+      // console.log('NEW JWT TOKEN', token)
+      // send response obj with user and token info 
+      res.status(200).send({
+        accessToken: token,
+        currentUser: getUser
+      });
+      //close db
+      db.close();
+
+    };
+
+  });
+
+  // compare req.body.password using bcrypt compare
+  // then set token in local storage.
+  // find username of the request in database, if it exists
+  // compare password with password in database using bcrypt, if it is correct
+  // generate a token using jsonwebtoken
+  // return user information & access Token
+});
 
 
 
