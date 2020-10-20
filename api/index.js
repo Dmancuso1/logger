@@ -1,6 +1,7 @@
 require('dotenv').config();
 const PORT = process.env.PORT || 8080;
 
+
 //Express
 const express = require('express');
 const app = express();
@@ -15,12 +16,20 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+
+// multer (file upload)
+var multer = require('multer')
+// var upload = multer({ dest: 'uploads/' })
+
+
 // JWT
 var jwt = require('jsonwebtoken');
+
 
 //bcrypt
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
 
 // MongoDB
 const MongoClient = require('mongodb').MongoClient;
@@ -58,18 +67,35 @@ app.get('/userindex', (req, res) => {
 
 // ---------------------------------  REGISTER - POST to /adduser, inserts one user
 
+// multer config
+var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+      cb(null, './uploads'); // Make sure this folder exists
+  },
+  filename: function(req, file, cb) {
+      var ext = file.originalname.split('.').pop();
+      cb(null, file.fieldname + '-' + Date.now() + '.' + ext);
+  }
+}),
+upload = multer({ storage: storage }).single("avatar");
 
-app.post("/adduser", (req, res, next) => {
-  console.log(req.body)
+
+
+//-----
+app.post("/adduser", upload, (req, res, next) => {
+  // console.log("BODYYYY", req.body) // the avatar won't show here, but it works
+  // console.log('REQUESTTT', req)
+
   const body = {
     fName: req.body.fName,
     lName: req.body.lName,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, saltRounds),
     address: req.body.address,
-    avatar: req.body.avatar,
+    avatar: req.file,
     startDate: new Date()
   };
+
   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, async function (err, db) {
     if (err) throw err;
     let dbo = db.db("logger");
@@ -85,7 +111,7 @@ app.post("/adduser", (req, res, next) => {
         if (err) throw err;
         const newUser = result.ops[0]
         console.log("1 document inserted");
-        // console.log('returned user', newUser)
+        console.log('returned user', newUser)
         // create Token
         const token = jwt.sign({ email: newUser.email }, process.env.JWT_SECRET, {
           expiresIn: 86400 // 24 hours
@@ -102,6 +128,9 @@ app.post("/adduser", (req, res, next) => {
     }
   });
 });
+
+
+
 
 
 // ---------------------------------  LOGIN  GET

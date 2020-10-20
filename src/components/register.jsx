@@ -15,28 +15,29 @@ const Register = (props) => {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    // format obj to match mongo obj
-    const userObj = {
-      fName,
-      lName,
-      email,
-      password,
-      address,
-      avatar
-    }
-    console.log("USER OBJ", userObj)
-    axios.post('/adduser', userObj)
-    .then(function (res) {
-      // pass
-      console.log("POST TO SERVER", res)
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("localUser", res.data.currentUser.email);
-      props.token(res.data.accessToken)
-      props.localUser(res.data.currentUser.email)
-    }).catch(function (err) {
-      // fail
-      console.log("ERROR POST TO SERVER", err)
-    })
+    // format to match mongo obj
+    let formData = new FormData();
+    formData.append("fName", fName)
+    formData.append("lName", lName)
+    formData.append("email", email)
+    formData.append("password", password)
+    formData.append("address", address)
+    formData.append("avatar", avatar)
+
+    // console.log('FORMDATA', formData) // console log has no effect (but actually works)
+    
+    axios.post('/adduser', formData)
+      .then(function (res) {
+        // pass
+        console.log("POST TO SERVER", res)
+        localStorage.setItem("accessToken", res.data.accessToken);
+        localStorage.setItem("localUser", res.data.currentUser.email);
+        props.token(res.data.accessToken)
+        props.localUser(res.data.currentUser.email)
+      }).catch(function (err) {
+        // fail
+        console.log("ERROR POST TO SERVER", err)
+      })
 
     setFName("");
     setLName("");
@@ -51,8 +52,8 @@ const Register = (props) => {
 
   return (
     <>
-    <h1>Register</h1>
-    <form className="" onSubmit={handleSubmit} enctype="multipart/form-data">
+      <h1>Register</h1>
+      <form className="" onSubmit={handleSubmit} encType="multipart/form-data">
         <label>
           <p><span>*First Name:</span>
             <input
@@ -123,9 +124,10 @@ const Register = (props) => {
           <p><span>Upload Avatar: </span>
             <input
               type="file"
-              name="file"
-              value={avatar}
-              onChange={e => setAvatar(e.target.value)}
+              name="avatar"
+              // value={avatar}
+              // file={avatar}
+              onChange={(e) => setAvatar(e.target.files[0])}
               required
             />
           </p>
