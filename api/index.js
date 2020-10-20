@@ -5,6 +5,11 @@ const PORT = process.env.PORT || 8080;
 const express = require('express');
 const app = express();
 
+// Cors
+const cors = require('cors');
+app.use(cors())
+
+
 // body parser
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -44,14 +49,14 @@ app.get('/userindex', (req, res) => {
     const userIndex = dbo.collection("users").find({})
     userIndex.forEach((user) => {
       db.close();
-      console.log(user); // logs current user
+      console.log(user); // logs current user 
     })
     res.end();
   });
 })
 
 
-// REGISTER - POST to /adduser, inserts one user
+// ---------------------------------  REGISTER - POST to /adduser, inserts one user
 
 
 app.post("/adduser", (req, res, next) => {
@@ -61,8 +66,9 @@ app.post("/adduser", (req, res, next) => {
     lName: req.body.lName,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, saltRounds),
-    startDate: new Date(),
-    lastLogin: new Date()
+    address: req.body.address,
+    avatar: req.body.avatar,
+    startDate: new Date()
   };
   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, async function (err, db) {
     if (err) throw err;
@@ -70,15 +76,15 @@ app.post("/adduser", (req, res, next) => {
     const isDupe = await dbo.collection("users").findOne({ email: `${req.body.email}` });
     if (isDupe) {
       //fail:
-      // console.log('Email already exists!!!')
-      // console.log("0 documents inserted");
+      console.log('Email already exists!!!')
+      console.log("0 documents inserted");
       // res.end();
     } else {
       // success:
       dbo.collection("users").insertOne(body, function (err, result) {
         if (err) throw err;
         const newUser = result.ops[0]
-        // console.log("1 document inserted");
+        console.log("1 document inserted");
         // console.log('returned user', newUser)
         // create Token
         const token = jwt.sign({ email: newUser.email }, process.env.JWT_SECRET, {
@@ -98,53 +104,53 @@ app.post("/adduser", (req, res, next) => {
 });
 
 
-// LOGIN - GET
+// ---------------------------------  LOGIN  GET
 app.get("/login", (req, res, next) => {
   res.send("Hello From Login")
 });
 
-// LOGIN - POST
+// --------------------------------- LOGIN - POST
 app.post("/login", (req, res, next) => {
   // TODO: add functionality.
   // findOne user by req.body.email
   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, async function (err, db) {
     if (err) throw err;
-
-    console.log("this is what's in the req.body: ", req.body.email)
-
+    // console.log("this is what's in the req.body: ", req.body.email)
     let dbo = db.db("logger");
 
     const getUser = await dbo.collection("users").findOne({ email: `${req.body.email}` });
-    console.log("GET USER ", getUser)
+    // console.log("GET USER ", getUser)
+
     if (!getUser) {
-      //fail
-      console.log('user not found. Would you like to create an account?')
+      //Login FAIL
       res.status(400).send({
         error: "User Not Found."
       })
     } else {
-      const token = jwt.sign({ email: getUser.email }, process.env.JWT_SECRET, {
-        expiresIn: 86400 // 24 hours
+
+      // Login PASS!
+      await bcrypt.compare(req.body.password, getUser.password).then(async function (result) {
+        if (!result) {
+          console.log('incorrect password! bcrypt result = ', result)
+        } else {
+          // sign/set JWT token
+          const token = jwt.sign({ email: getUser.email }, process.env.JWT_SECRET, {
+            expiresIn: 86400 // 24 hours
+          });
+          // send response to client
+          res.status(200).send({
+            accessToken: token,
+            currentUser: getUser
+          });
+        }
       });
-      // console.log('NEW JWT TOKEN', token)
-      // send response obj with user and token info 
-      res.status(200).send({
-        accessToken: token,
-        currentUser: getUser
-      });
-      //close db
-      db.close();
 
     };
-
+    console.log("GET USER ", getUser)
+    //close db
+    db.close();
   });
 
-  // compare req.body.password using bcrypt compare
-  // then set token in local storage.
-  // find username of the request in database, if it exists
-  // compare password with password in database using bcrypt, if it is correct
-  // generate a token using jsonwebtoken
-  // return user information & access Token
 });
 
 

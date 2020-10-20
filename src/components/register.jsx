@@ -8,15 +8,21 @@ const Register = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [address, setAddress] = useState("");
+  const [avatar, setAvatar] = useState("");
+
 
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
+    // format obj to match mongo obj
     const userObj = {
       fName,
       lName,
       email,
-      password
+      password,
+      address,
+      avatar
     }
     console.log("USER OBJ", userObj)
     axios.post('/adduser', userObj)
@@ -37,6 +43,8 @@ const Register = (props) => {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+    setAddress("");
+    setAvatar("");
 
   }
 
@@ -44,7 +52,7 @@ const Register = (props) => {
   return (
     <>
     <h1>Register</h1>
-    <form className="" onSubmit={handleSubmit}>
+    <form className="" onSubmit={handleSubmit} enctype="multipart/form-data">
         <label>
           <p><span>*First Name:</span>
             <input
@@ -96,6 +104,28 @@ const Register = (props) => {
               value={confirmPassword}
               placeholder="Re-type password"
               onChange={e => setConfirmPassword(e.target.value)}
+              required
+            />
+          </p>
+        </label>
+        <label>
+          <p><span>Address</span>
+            <input
+              type="text"
+              value={address}
+              placeholder="Address"
+              onChange={e => setAddress(e.target.value)}
+              required
+            />
+          </p>
+        </label>
+        <label>
+          <p><span>Upload Avatar: </span>
+            <input
+              type="file"
+              name="file"
+              value={avatar}
+              onChange={e => setAvatar(e.target.value)}
               required
             />
           </p>
