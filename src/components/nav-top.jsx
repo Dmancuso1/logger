@@ -1,13 +1,14 @@
 import React from 'react';
-import { NavLink, Link, Redirect } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 const NavTop = (props) => {
+
+  // console.log("Props from NavTop", props)
 
 
   return (
 
     <>
-      { props.token ? null : <Redirect to="/" />}
       <ul>
         <li>
           <NavLink className="" to="/">Home</NavLink>
