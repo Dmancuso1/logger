@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 8080;
 //Express
 const express = require('express');
 const app = express();
+app.use("/uploads", express.static('uploads'))
 
 // Cors
 const cors = require('cors');
@@ -19,7 +20,6 @@ app.use(bodyParser.json());
 
 // multer (file upload)
 var multer = require('multer')
-// var upload = multer({ dest: 'uploads/' })
 
 
 // JWT
@@ -57,7 +57,7 @@ app.get('/userindex', (req, res) => {
     let dbo = db.db(`${dbName}`);
     const userIndex = dbo.collection("users").find({})
     userIndex.forEach((user) => {
-      db.close();
+      // db.close();
       console.log(user); // logs current user 
     })
     res.end();
@@ -182,6 +182,20 @@ app.post("/login", (req, res, next) => {
 
 });
 
+
+// find logged in user 
+// app.get('/dashboard', (req, res) => {
+//   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
+//     if (err) throw err;
+//     let dbo = db.db(`${dbName}`);
+//     const userIndex = dbo.collection("users").find({})
+//     userIndex.forEach((user) => {
+//       db.close();
+//       console.log(user); // logs current user 
+//     })
+//     res.end();
+//   });
+// })
 
 
 

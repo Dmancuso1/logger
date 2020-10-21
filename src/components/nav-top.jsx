@@ -1,13 +1,13 @@
 import React from 'react';
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, Redirect } from "react-router-dom";
 
 const NavTop = (props) => {
 
-  console.log("PROPS", props)
 
   return (
 
     <>
+      { props.token ? null : <Redirect to="/" />}
       <ul>
         <li>
           <NavLink className="" to="/">Home</NavLink>
@@ -16,7 +16,7 @@ const NavTop = (props) => {
           <NavLink className="" to="/register">Register</NavLink>
         </li>
         <li>
-          {props.token ? (<NavLink className="" to="/">Logout</NavLink>) : (<Link to="/login">Login</Link>)}
+          {props.token ? (<Link className="" to="/" onClick={() => props.logout()}>Logout</Link>) : (<Link to="/login">Login</Link>)}
         </li>
         {props.token ? <li><NavLink className="" to="/dashboard">My Dashboard</NavLink></li> : null}
       </ul>

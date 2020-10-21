@@ -17,11 +17,17 @@ const LoginPage = (props) => {
       .then(function (res) {
         // pass
         console.log('returned from server" ', res)
+
+        const localUserObj = {
+          'email': res.data.currentUser.email,
+          'avatar': res.data.currentUser.avatar.path,
+          'address': res.data.currentUser.address
+        };
+
         localStorage.setItem("accessToken", res.data.accessToken);
-        localStorage.setItem("localUser", res.data.currentUser.email);
-        props.token(res.data.accessToken)
-        props.localUser(res.data.currentUser.email)
-        // console.log("PROPS USER", res.data.currentUser)
+        localStorage.setItem("localUser", JSON.stringify(localUserObj));
+        props.setToken(res.data.accessToken)
+        props.setLocalUser(localUserObj)
       })
       .catch(function (err) {
         //fail 

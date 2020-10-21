@@ -25,15 +25,21 @@ const Register = (props) => {
     formData.append("avatar", avatar)
 
     // console.log('FORMDATA', formData) // console log has no effect (but actually works)
-    
+
     axios.post('/adduser', formData)
       .then(function (res) {
         // pass
+        const localUserObj = {
+          'email': res.data.currentUser.email,
+          'avatar': res.data.currentUser.avatar.path,
+          'address': res.data.currentUser.address
+        };
+        console.log("JSON OBJECT PARSED", localUserObj)
         console.log("POST TO SERVER", res)
         localStorage.setItem("accessToken", res.data.accessToken);
-        localStorage.setItem("localUser", res.data.currentUser.email);
-        props.token(res.data.accessToken)
-        props.localUser(res.data.currentUser.email)
+        localStorage.setItem("localUser", JSON.stringify(localUserObj));
+        props.setToken(res.data.accessToken);
+        props.setLocalUser(localUserObj);
       }).catch(function (err) {
         // fail
         console.log("ERROR POST TO SERVER", err)
