@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# no add image uploads
+/api/uploads
+
 # testing
 /coverage
 
