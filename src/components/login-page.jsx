@@ -26,8 +26,9 @@ const LoginPage = (props) => {
 
         localStorage.setItem("accessToken", res.data.accessToken);
         localStorage.setItem("localUser", JSON.stringify(localUserObj));
-        props.setToken(res.data.accessToken)
-        props.setLocalUser(localUserObj)
+        // props.setToken(res.data.accessToken)
+        // props.setLocalUser(localUserObj)
+        props.login(localUserObj, res.data.accessToken)
       })
       .catch(function (err) {
         //fail 
@@ -38,7 +39,6 @@ const LoginPage = (props) => {
     setPassword("");
 
   }
-
 
   return (
     <>

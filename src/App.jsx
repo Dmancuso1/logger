@@ -11,20 +11,27 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 
 function App() {
+ 
   const [token, setToken] = useState(null);
   const [localUser, setLocalUser] = useState({});
 
   useEffect(() => {
     //can set userId, cookie etc..
+
     const localToken = localStorage.getItem("accessToken");
     const userInfo = JSON.parse(localStorage.getItem("localUser"));
     if (localToken && userInfo) {
       setToken(localToken);
       setLocalUser(userInfo);
       // also can set more state like user email etc..
- 
+
     }
   }, []);
+
+  const login = (user, token) => {
+    setToken(token)
+    setLocalUser(user)
+  }
 
   const logout = () => {
     localStorage.removeItem("accessToken");
@@ -39,8 +46,10 @@ function App() {
       <Router>
         <NavTop logout={logout} token={token} localUser={localUser} />
         <Switch>
-          <Route exact path="/login" component={() => (<LoginPage setToken={setToken} setLocalUser={setLocalUser} />)}></Route>
-          <Route exact path="/register" component={() => (<Register setToken={setToken} setLocalUser={setLocalUser} />)}></Route>
+          {/* <Route exact path="/login" component={() => (<LoginPage setToken={setToken} setLocalUser={setLocalUser} />)}></Route>
+          <Route exact path="/register" component={() => (<Register setToken={setToken} setLocalUser={setLocalUser} />)}></Route> */}
+          <Route exact path="/register" component={() => (<Register login={login} />)}></Route>
+          <Route exact path="/login" component={() => (<LoginPage login={login} />)}></Route>
           <Route exact path="/dashboard" component={() => (<Dashboard token={token} localUser={localUser} />)}></Route>
           <Route exact path="/" component={() => (<Home token={token} localUser={localUser} />)}></Route>
         </Switch>

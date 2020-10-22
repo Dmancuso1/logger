@@ -3,7 +3,7 @@ import { NavLink, Link } from "react-router-dom";
 
 const NavTop = (props) => {
 
-  // console.log("Props from NavTop", props)
+  console.log("Props from NavTop", props)
 
 
   return (
@@ -17,7 +17,7 @@ const NavTop = (props) => {
           <NavLink className="" to="/register">Register</NavLink>
         </li>
         <li>
-          {props.token ? (<Link className="" to="/" onClick={() => props.logout()}>Logout</Link>) : (<Link to="/login">Login</Link>)}
+          {props.token ? (<Link className="" to="/login" onClick={() => props.logout()}>Logout</Link>) : (<Link to="/login">Login</Link>)}
         </li>
         {props.token ? <li><NavLink className="" to="/dashboard">My Dashboard</NavLink></li> : null}
       </ul>

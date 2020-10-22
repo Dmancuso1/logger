@@ -44,13 +44,14 @@ const uri = `mongodb+srv://dmancuso:${dbPw}@cluster0.hichq.mongodb.net/${dbName}
 
 
 
-//Home
+//Home  //////////////////////////////////
 app.get('/', function (req, res) {
   res.send("Welcome to Logger")
 })
 
 
-// this logs all users. ( TODO: switch to user profile)
+
+// GET  USER  ////////////////////////////////// logs all users
 app.get('/userindex', (req, res) => {
   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
     if (err) throw err;
@@ -65,27 +66,23 @@ app.get('/userindex', (req, res) => {
 })
 
 
-// ---------------------------------  REGISTER - POST to /adduser, inserts one user
 
+// POST ADDUSER ////////////////////////////////// adds one user
 // multer config
 var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-      cb(null, './uploads'); // Make sure this folder exists
+  destination: function (req, file, cb) {
+    cb(null, './uploads'); // Make sure this folder exists
   },
-  filename: function(req, file, cb) {
-      var ext = file.originalname.split('.').pop();
-      cb(null, file.fieldname + '-' + Date.now() + '.' + ext);
+  filename: function (req, file, cb) {
+    var ext = file.originalname.split('.').pop();
+    cb(null, file.fieldname + '-' + Date.now() + '.' + ext);
   }
 }),
-upload = multer({ storage: storage }).single("avatar");
+  upload = multer({ storage: storage }).single("avatar");
 
 
 
-//-----
 app.post("/adduser", upload, (req, res, next) => {
-  // console.log("BODYYYY", req.body) // the avatar won't show here, but it works
-  // console.log('REQUESTTT', req)
-
   const body = {
     fName: req.body.fName,
     lName: req.body.lName,
@@ -95,7 +92,6 @@ app.post("/adduser", upload, (req, res, next) => {
     avatar: req.file,
     startDate: new Date()
   };
-
   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, async function (err, db) {
     if (err) throw err;
     let dbo = db.db("logger");
@@ -104,7 +100,6 @@ app.post("/adduser", upload, (req, res, next) => {
       //fail:
       console.log('Email already exists!!!')
       console.log("0 documents inserted");
-      // res.end();
     } else {
       // success:
       dbo.collection("users").insertOne(body, function (err, result) {
@@ -122,7 +117,6 @@ app.post("/adduser", upload, (req, res, next) => {
           accessToken: token,
           currentUser: newUser
         });
-        //close db
         db.close();
       });
     }
@@ -131,14 +125,13 @@ app.post("/adduser", upload, (req, res, next) => {
 
 
 
-
-
-// ---------------------------------  LOGIN  GET
+// GET  LOGIN  //////////////////////////////////
 app.get("/login", (req, res, next) => {
   res.send("Hello From Login")
 });
 
-// --------------------------------- LOGIN - POST
+
+// POST  LOGIN  //////////////////////////////////     
 app.post("/login", (req, res, next) => {
   // TODO: add functionality.
   // findOne user by req.body.email
@@ -148,10 +141,11 @@ app.post("/login", (req, res, next) => {
     let dbo = db.db("logger");
 
     const getUser = await dbo.collection("users").findOne({ email: `${req.body.email}` });
-    // console.log("GET USER ", getUser)
+    // console.log("GET USER!!! ", getUser)
 
     if (!getUser) {
       //Login FAIL
+      console.log('User not found!')
       res.status(400).send({
         error: "User Not Found."
       })
@@ -161,6 +155,9 @@ app.post("/login", (req, res, next) => {
       await bcrypt.compare(req.body.password, getUser.password).then(async function (result) {
         if (!result) {
           console.log('incorrect password! bcrypt result = ', result)
+          res.status(400).send({
+            error: "Wrong password."
+          })
         } else {
           // sign/set JWT token
           const token = jwt.sign({ email: getUser.email }, process.env.JWT_SECRET, {
@@ -175,30 +172,13 @@ app.post("/login", (req, res, next) => {
       });
 
     };
-    console.log("GET USER ", getUser)
-    //close db
     db.close();
   });
 
 });
 
 
-// find logged in user 
-// app.get('/dashboard', (req, res) => {
-//   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
-//     if (err) throw err;
-//     let dbo = db.db(`${dbName}`);
-//     const userIndex = dbo.collection("users").find({})
-//     userIndex.forEach((user) => {
-//       db.close();
-//       console.log(user); // logs current user 
-//     })
-//     res.end();
-//   });
-// })
-
-
-
+//////////////////////////////////
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
