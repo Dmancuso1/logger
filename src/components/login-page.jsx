@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Redirect} from "react-router-dom";
 const axios = require('axios');
 
 
@@ -70,6 +71,7 @@ const LoginPage = (props) => {
         <input className="" type="submit" value="submit" />
       </form>
       {status ? <p>Loading...</p> : null}
+      {props.token? <Redirect to="/dashboard"></Redirect> : null}
 
     </>
   )

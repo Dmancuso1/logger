@@ -44,12 +44,12 @@ function App() {
   return (
     <>
       <Router>
-        <NavTop logout={logout} token={token} localUser={localUser} />
+        <NavTop logout={logout} token={token} localUser={localUser}/>
         <Switch>
           {/* <Route exact path="/login" component={() => (<LoginPage setToken={setToken} setLocalUser={setLocalUser} />)}></Route>
           <Route exact path="/register" component={() => (<Register setToken={setToken} setLocalUser={setLocalUser} />)}></Route> */}
-          <Route exact path="/register" component={() => (<Register login={login} />)}></Route>
-          <Route exact path="/login" component={() => (<LoginPage login={login} />)}></Route>
+          <Route exact path="/register" component={() => (<Register login={login} token={token} />)}></Route>
+          <Route exact path="/login" component={() => (<LoginPage login={login} token={token} />)}></Route>
           <Route exact path="/dashboard" component={() => (<Dashboard token={token} localUser={localUser} />)}></Route>
           <Route exact path="/" component={() => (<Home token={token} localUser={localUser} />)}></Route>
         </Switch>

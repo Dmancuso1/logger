@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect} from "react-router-dom";
 const axios = require('axios');
 
 
@@ -10,6 +11,7 @@ const Register = (props) => {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [status, setStatus] = useState(false)
 
 
 
@@ -25,10 +27,12 @@ const Register = (props) => {
     formData.append("avatar", avatar)
 
     // console.log('FORMDATA', formData) // console log has no effect (but actually works)
+    setStatus(true)
 
     axios.post('/adduser', formData)
       .then(function (res) {
         // pass
+        setStatus(false)
         const localUserObj = {
           'email': res.data.currentUser.email,
           'avatar': res.data.currentUser.avatar.path,
@@ -38,11 +42,10 @@ const Register = (props) => {
         console.log("POST TO SERVER", res)
         localStorage.setItem("accessToken", res.data.accessToken);
         localStorage.setItem("localUser", JSON.stringify(localUserObj));
-        // props.setToken(res.data.accessToken);
-        // props.setLocalUser(localUserObj);
         props.login(localUserObj, res.data.accessToken)
       }).catch(function (err) {
         // fail
+        setStatus(false)
         console.log("ERROR POST TO SERVER", err)
       })
 
@@ -132,8 +135,6 @@ const Register = (props) => {
             <input
               type="file"
               name="avatar"
-              // value={avatar}
-              // file={avatar}
               onChange={(e) => setAvatar(e.target.files[0])}
               required
             />
@@ -141,6 +142,8 @@ const Register = (props) => {
         </label>
         <input className="" type="submit" value="Submit" />
       </form>
+      {status ? <p>Loading...</p> : null}
+      {props.token? <Redirect to="/dashboard"></Redirect> : null}
 
     </>
   )
