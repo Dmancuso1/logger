@@ -23,7 +23,7 @@ const Dashboard = (props) => {
           </tr>
         </tbody>
       </table>
-      <PlacesMapApi />
+      {/* <PlacesMapApi /> */}
     </>
   )
 }
