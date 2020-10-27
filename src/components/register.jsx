@@ -12,6 +12,7 @@ const Register = (props) => {
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState("");
   const [status, setStatus] = useState(false)
+  const [registered, setRegistered] = useState(false)
 
 
 
@@ -27,12 +28,13 @@ const Register = (props) => {
     formData.append("avatar", avatar)
 
     // console.log('FORMDATA', formData) // console log has no effect (but actually works)
-    setStatus(true)
+    setStatus(true) // spinner on
 
     axios.post('/adduser', formData)
       .then(function (res) {
         // pass
-        setStatus(false)
+        setStatus(false) // spinner off
+        setRegistered(true)
         const localUserObj = {
           'email': res.data.currentUser.email,
           'avatar': res.data.currentUser.avatar.path,
@@ -45,7 +47,7 @@ const Register = (props) => {
         props.login(localUserObj, res.data.accessToken)
       }).catch(function (err) {
         // fail
-        setStatus(false)
+        setStatus(false) // spinner off
         console.log("ERROR POST TO SERVER", err)
       })
 
@@ -143,7 +145,7 @@ const Register = (props) => {
         <input className="" type="submit" value="Submit" />
       </form>
       {status ? <p>Loading...</p> : null}
-      {props.token? <Redirect to="/dashboard"></Redirect> : null}
+      {props.token?  <Redirect to="/dashboard"></Redirect> : null}
 
     </>
   )

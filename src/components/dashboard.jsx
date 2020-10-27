@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import PlacesMapApi from './places-map-api';
 require('dotenv').config();
 
@@ -8,6 +9,7 @@ const Dashboard = (props) => {
   const baseApiUrl = process.env.REACT_APP_BASE_SERVER_URL;
   return (
     <>
+      {!localStorage.getItem("accessToken") ? <Redirect to="/"></Redirect> : null}
       <h1>{props.localUser.email ? `${props.localUser.email}'s` : null} Dashboard</h1>
       <img src={`${baseApiUrl}${props.localUser.avatar}`} width="300" height="auto" alt={props.localUser.avatar} />
 

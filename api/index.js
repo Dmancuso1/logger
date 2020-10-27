@@ -67,7 +67,7 @@ app.get('/userindex', (req, res) => {
 
 
 
-// POST ADDUSER ////////////////////////////////// adds one user
+// POST ADDUSER REGISTER ////////////////////////////////// adds one user
 // multer config
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -100,6 +100,8 @@ app.post("/adduser", upload, (req, res, next) => {
       //fail:
       console.log('Email already exists!!!')
       console.log("0 documents inserted");
+      db.close();
+      res.end()
     } else {
       // success:
       dbo.collection("users").insertOne(body, function (err, result) {

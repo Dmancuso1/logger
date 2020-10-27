@@ -1,3 +1,8 @@
+# Logger
+
+## Description:
+Logger is a registration-based single page app that uses `MongoDB` with `Node.JS` and `React.JS` Custom styling with `CSS Flexbox`. 
+
 ## Available Scripts
 
 In the project directory, you can run:
