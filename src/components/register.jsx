@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { Redirect } from "react-router-dom";
+import Geocode from "react-geocode";
+require('dotenv').config();
 const axios = require('axios');
+
+
+// set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
+Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API);
+
+// set response language. Defaults to english.
+// Geocode.setLanguage("en");
 
 
 
