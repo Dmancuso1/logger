@@ -3,6 +3,17 @@
 ## Description:
 Logger is a registration-based single page app that uses `MongoDB` with `Node.JS` and `React.JS` Custom styling with `CSS Flexbox`. 
 
+## Dependancies:
+  ` axios,
+    express,
+    node-sass,
+    react,
+    react-dom,
+    react-google-maps,
+    react-router-dom,
+    react-scripts,`
+
+
 ## Available Scripts
 
 In the project directory, you can run:

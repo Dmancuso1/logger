@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 const axios = require('axios');
 
 
+
 const Register = (props) => {
+
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [email, setEmail] = useState("");
@@ -12,8 +14,7 @@ const Register = (props) => {
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState("");
   const [status, setStatus] = useState(false)
-  const [registered, setRegistered] = useState(false)
-
+  const [isSignedUp, setIsSignedUp] = useState(false)
 
 
   const handleSubmit = (evt) => {
@@ -26,31 +27,35 @@ const Register = (props) => {
     formData.append("password", password)
     formData.append("address", address)
     formData.append("avatar", avatar)
-
+    // TODO: get long and lat from address!
     // console.log('FORMDATA', formData) // console log has no effect (but actually works)
+
     setStatus(true) // spinner on
 
     axios.post('/adduser', formData)
       .then(function (res) {
         // pass
         setStatus(false) // spinner off
-        setRegistered(true)
+        
         const localUserObj = {
           'email': res.data.currentUser.email,
           'avatar': res.data.currentUser.avatar.path,
           'address': res.data.currentUser.address
         };
-        console.log("JSON OBJECT PARSED", localUserObj)
-        console.log("POST TO SERVER", res)
+        
+        // console.log("JSON OBJECT PARSED", localUserObj)
+        // console.log("POST TO SERVER", res)
         localStorage.setItem("accessToken", res.data.accessToken);
         localStorage.setItem("localUser", JSON.stringify(localUserObj));
         props.login(localUserObj, res.data.accessToken)
+            
+        setIsSignedUp(true) // (NOT WORKING) signal to redirect to dashboard(profile page)
+        
       }).catch(function (err) {
         // fail
         setStatus(false) // spinner off
         console.log("ERROR POST TO SERVER", err)
       })
-
     setFName("");
     setLName("");
     setEmail("");
@@ -58,7 +63,6 @@ const Register = (props) => {
     setConfirmPassword("");
     setAddress("");
     setAvatar("");
-
   }
 
 
@@ -145,7 +149,7 @@ const Register = (props) => {
         <input className="" type="submit" value="Submit" />
       </form>
       {status ? <p>Loading...</p> : null}
-      {props.token?  <Redirect to="/dashboard"></Redirect> : null}
+      {isSignedUp ? <Redirect to="/dashboard"></Redirect> : null}
 
     </>
   )

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import PlacesMapApi from './places-map-api';
+import Dane from './react-google-maps';
 require('dotenv').config();
 
 
 const Dashboard = (props) => {
-  console.log("props from dashboard ", props)
+  // console.log("props from dashboard ", props)
   const baseApiUrl = process.env.REACT_APP_BASE_SERVER_URL;
   return (
     <>
@@ -25,7 +25,7 @@ const Dashboard = (props) => {
           </tr>
         </tbody>
       </table>
-      {/* <PlacesMapApi /> */}
+      <Dane props = { props } />
     </>
   )
 }
