@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from "react-router-dom";
-import Geocode from "react-geocode";
+import '../App.scss';
 require('dotenv').config();
 const axios = require('axios');
 
 
-// set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
-Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API);
-
-// set response language. Defaults to english.
-// Geocode.setLanguage("en");
 
 
 
@@ -24,10 +19,62 @@ const Register = (props) => {
   const [avatar, setAvatar] = useState("");
   const [status, setStatus] = useState(false)
   const [isSignedUp, setIsSignedUp] = useState(false)
+  const [coords, setCoords] = useState([])
+
+
+  // axios request 
+  useEffect(() => {
+    // Get latitude & longitude from address using GeocodeAPI (rapid).
+    axios({
+      "method": "GET",
+      "url": "https://verify-and-geocode-address.p.rapidapi.com/v1/geocode/search",
+      "headers": {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "verify-and-geocode-address.p.rapidapi.com",
+        "x-rapidapi-key": process.env.REACT_APP_RAPID_API,
+        "useQueryString": true
+      }, "params": {
+        "limit": "1",
+        "lang": "en",
+        "text": address
+      }
+    })
+      .then((response) => {
+        console.log(response)
+        // make case for features[] <-- empty array
+        if (response.data.features.length === 0) {
+          console.log("ARRAY IS EMPTY")
+          setCoords([])
+        } else {
+          setCoords(response.data.features[0].geometry.coordinates)
+          console.log("ARRAY HAS DATA :)")
+          console.log("ADDRESS COORDS", response.data.features[0].geometry.coordinates)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }, [address]);
 
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
+
+    setStatus(true) // spinner on
+
+    // if no coords, exit form and alert user to enter valid address
+    if (coords.length === 0) {
+      console.log("NO COORDS FOUND, PLEASE ENTER A VALID ADDRESS")
+      setAddress("");
+      setStatus(false) // spinner off
+      return
+    } else {
+      console.log("COORDS OKAY!", coords)
+    }
+
+    // code goes here..
+
+
     // format to match mongo obj
     let formData = new FormData();
     formData.append("fName", fName)
@@ -39,27 +86,30 @@ const Register = (props) => {
     // TODO: get long and lat from address!
     // console.log('FORMDATA', formData) // console log has no effect (but actually works)
 
-    setStatus(true) // spinner on
+
+
 
     axios.post('/adduser', formData)
       .then(function (res) {
         // pass
         setStatus(false) // spinner off
-        
+
+        // console.log("HAS COORDS", coords) // works yay! 
+
         const localUserObj = {
-          'email': res.data.currentUser.email,
-          'avatar': res.data.currentUser.avatar.path,
-          'address': res.data.currentUser.address
+          email: res.data.currentUser.email,
+          avatar: res.data.currentUser.avatar.path,
+          address: res.data.currentUser.address
         };
-        
+
         // console.log("JSON OBJECT PARSED", localUserObj)
         // console.log("POST TO SERVER", res)
         localStorage.setItem("accessToken", res.data.accessToken);
         localStorage.setItem("localUser", JSON.stringify(localUserObj));
         props.login(localUserObj, res.data.accessToken)
-            
+
         setIsSignedUp(true) // (NOT WORKING) signal to redirect to dashboard(profile page)
-        
+
       }).catch(function (err) {
         // fail
         setStatus(false) // spinner off
@@ -143,6 +193,7 @@ const Register = (props) => {
               onChange={e => setAddress(e.target.value)}
               required
             />
+            {coords.length > 0 ? <span className="basic--valid--color"><small>Address okay!</small></span> : <span className="basic--invalid--color"><small>Invalid Address</small></span>}
           </p>
         </label>
         <label>
