@@ -27,6 +27,7 @@ const Register = (props) => {
     formData.append("password", password)
     formData.append("address", address)
     formData.append("avatar", avatar)
+    // TODO: get long and lat from address!
     // console.log('FORMDATA', formData) // console log has no effect (but actually works)
 
     setStatus(true) // spinner on
