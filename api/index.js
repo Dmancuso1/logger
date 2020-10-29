@@ -90,6 +90,8 @@ app.post("/adduser", upload, (req, res, next) => {
     password: bcrypt.hashSync(req.body.password, saltRounds),
     address: req.body.address,
     avatar: req.file,
+    lat: parseFloat(req.body.lat),
+    lng: parseFloat(req.body.lng),
     startDate: new Date()
   };
   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, async function (err, db) {

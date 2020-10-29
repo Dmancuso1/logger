@@ -22,9 +22,14 @@ const Register = (props) => {
   const [coords, setCoords] = useState([])
 
 
-  // axios request 
+
+
+
   useEffect(() => {
-    // Get latitude & longitude from address using GeocodeAPI (rapid).
+    // do not call axios if address is blank or empty string
+    if (!address || address === "") return;
+
+    // Get from GeocodeAPI (rapid).
     axios({
       "method": "GET",
       "url": "https://verify-and-geocode-address.p.rapidapi.com/v1/geocode/search",
@@ -41,7 +46,6 @@ const Register = (props) => {
     })
       .then((response) => {
         console.log(response)
-        // make case for features[] <-- empty array
         if (response.data.features.length === 0) {
           console.log("ARRAY IS EMPTY")
           setCoords([])
@@ -57,11 +61,17 @@ const Register = (props) => {
   }, [address]);
 
 
+
+
+
+
+
+
   const handleSubmit = (evt) => {
+
     evt.preventDefault();
 
     setStatus(true) // spinner on
-
     // if no coords, exit form and alert user to enter valid address
     if (coords.length === 0) {
       console.log("NO COORDS FOUND, PLEASE ENTER A VALID ADDRESS")
@@ -71,10 +81,6 @@ const Register = (props) => {
     } else {
       console.log("COORDS OKAY!", coords)
     }
-
-    // code goes here..
-
-
     // format to match mongo obj
     let formData = new FormData();
     formData.append("fName", fName)
@@ -83,8 +89,12 @@ const Register = (props) => {
     formData.append("password", password)
     formData.append("address", address)
     formData.append("avatar", avatar)
+    formData.append("lat", coords[1])
+    formData.append("lng", coords[0])
     // TODO: get long and lat from address!
     // console.log('FORMDATA', formData) // console log has no effect (but actually works)
+
+
 
 
 
@@ -93,15 +103,14 @@ const Register = (props) => {
       .then(function (res) {
         // pass
         setStatus(false) // spinner off
-
         // console.log("HAS COORDS", coords) // works yay! 
-
         const localUserObj = {
           email: res.data.currentUser.email,
           avatar: res.data.currentUser.avatar.path,
-          address: res.data.currentUser.address
+          address: res.data.currentUser.address,
+          lat: res.data.currentUser.lat,
+          lng: res.data.currentUser.lng
         };
-
         // console.log("JSON OBJECT PARSED", localUserObj)
         // console.log("POST TO SERVER", res)
         localStorage.setItem("accessToken", res.data.accessToken);
@@ -123,6 +132,12 @@ const Register = (props) => {
     setAddress("");
     setAvatar("");
   }
+
+
+
+
+
+
 
 
   return (
@@ -193,7 +208,7 @@ const Register = (props) => {
               onChange={e => setAddress(e.target.value)}
               required
             />
-            {coords.length > 0 ? <span className="basic--valid--color"><small>Address okay!</small></span> : <span className="basic--invalid--color"><small>Invalid Address</small></span>}
+            {coords.length === 0 ? <span className="basic--invalid--color"><small>Invalid Address</small></span> : <span className="basic--valid--color"><small>Address okay!</small></span>}
           </p>
         </label>
         <label>

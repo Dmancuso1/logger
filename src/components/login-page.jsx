@@ -23,9 +23,11 @@ const LoginPage = (props) => {
         setStatus(false)
         console.log('returned from server" ', res)
         const localUserObj = {
-          'email': res.data.currentUser.email,
-          'avatar': res.data.currentUser.avatar.path,
-          'address': res.data.currentUser.address
+          email: res.data.currentUser.email,
+          avatar: res.data.currentUser.avatar.path,
+          address: res.data.currentUser.address,
+          lat: res.data.currentUser.lat,
+          lng: res.data.currentUser.lng
         };
         localStorage.setItem("accessToken", res.data.accessToken);
         localStorage.setItem("localUser", JSON.stringify(localUserObj));
