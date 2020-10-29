@@ -16,12 +16,8 @@ require('dotenv').config();
 const ReactGoogleMap = (props) => {
   console.log("PROPS FROM MAP", props)
   const userAddress = props.props.localUser.address
-
-  // TODO: get from props eventually 
-  const UserLongLat = [27.773056, -82.639999];
-
-  const lat = UserLongLat[0]
-  const lng = UserLongLat[1]
+  const lat = props.props.localUser.lat
+  const lng = props.props.localUser.lng
 
   function Map() {
 
@@ -29,7 +25,7 @@ const ReactGoogleMap = (props) => {
 
     return (
       <GoogleMap
-        defaultZoom={10}
+        defaultZoom={15}
         defaultCenter={{ lat, lng }}
         defaultOptions={{styles: mapStyles, disableDefaultUI: true}}
       >
